@@ -91,6 +91,24 @@ function ByteByteGoSystemDesign({ position }) {
   );
 }
 
+function RotatingAds({ ads, selectedIndex, position }) {
+  return (
+    <div className={styles.rotation}>
+      {ads.map((Ad, index) => (
+        <div
+          key={Ad.name}
+          className={clsx(
+            styles.slide,
+            index !== selectedIndex && styles.inactive,
+          )}
+          aria-hidden={index !== selectedIndex}>
+          <Ad position={position} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default React.memo(function SidebarAd({ position }) {
   const [counter, setCounter] = useState(0);
   useEffect(() => {
@@ -123,17 +141,21 @@ export default React.memo(function SidebarAd({ position }) {
         }
 
         if (path.includes('system-design')) {
-          return rand < 0.5 ? (
-            <ByteByteGoSystemDesign key={Math.random()} position={position} />
-          ) : (
-            <DesignGurusSystemDesign key={Math.random()} position={position} />
+          return (
+            <RotatingAds
+              ads={[ByteByteGoSystemDesign, DesignGurusSystemDesign]}
+              selectedIndex={rand < 0.5 ? 0 : 1}
+              position={position}
+            />
           );
         }
 
-        return rand < 0.5 ? (
-          <FAANGTechLeads key={Math.random()} position={position} />
-        ) : (
-          <GreatFrontEnd key={Math.random()} position={position} />
+        return (
+          <RotatingAds
+            ads={[FAANGTechLeads, GreatFrontEnd]}
+            selectedIndex={rand < 0.5 ? 0 : 1}
+            position={position}
+          />
         );
       }}
     </BrowserOnly>
